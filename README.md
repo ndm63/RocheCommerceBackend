@@ -36,6 +36,12 @@ Build a container (Docker) image and deploy to InfoRisk Nexus customer snapshot 
 mvn clean package jib:build -Djib.to.image=nexus.inforisk.es:18545/inforisk/roche-commerce-backend:0.0.1-SNAPSHOT -Djib.to.auth.username=neill -Djib.to.auth.password=<password>
 ```
 
+Run end-to-end tests, giving the running application base URL
+
+```sh
+mvn clean test -Dtest=*E2E -Dapp.ws.url.base=http://192.168.181.50:9098
+```
+
 
 ## Running the application
 
