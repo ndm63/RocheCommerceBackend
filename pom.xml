@@ -16,6 +16,9 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+        <!-- Version for container Image -->
+        <spring-boot.build-image.imageName>ema/${project.artifactId}:${build.version}</spring-boot.build-image.imageName>
+        <jib.version>2.6.0</jib.version>
 	</properties>
 
 	<dependencies>
@@ -62,6 +65,20 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <!-- ================================ -->
+            <!-- Container image creation -->
+            <!-- ================================ -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib.version}</version>
+                <configuration>
+                    <containerizingMode>packaged</containerizingMode>
+                    <to>
+                        <image>${spring-boot.build-image.imageName}</image>
+                    </to>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
