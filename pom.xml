@@ -19,6 +19,8 @@
         <!-- Version for container Image -->
         <spring-boot.build-image.imageName>ema/${project.artifactId}:${build.version}</spring-boot.build-image.imageName>
         <jib.version>2.6.0</jib.version>
+        <!-- Version for Manifest file -->
+        <build.version>${project.version}</build.version>
 	</properties>
 
 	<dependencies>
@@ -77,6 +79,24 @@
                     <to>
                         <image>${spring-boot.build-image.imageName}</image>
                     </to>
+                </configuration>
+            </plugin>
+            <!-- ================================ -->
+            <!-- Set version in MANIFEST.MF file -->
+            <!-- ================================ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Version>${build.version}</Implementation-Version>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                        </manifestEntries>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
 		</plugins>
