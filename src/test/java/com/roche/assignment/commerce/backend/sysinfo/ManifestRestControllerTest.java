@@ -55,7 +55,7 @@ public class ManifestRestControllerTest {
 	private ServletContext servletContext;
 
 	@MockBean
-	private ManifestReader manifestReader;
+	private ManifestProvider manifestReader;
 
 	@Test
 	public void testVersion_none_OK() throws Exception {

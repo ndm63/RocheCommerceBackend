@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ManifestLogger {
-	private final ManifestReader manifestReader;
+	private final ManifestProvider manifestReader;
 
 	@PostConstruct
 	public void postConstruct() {

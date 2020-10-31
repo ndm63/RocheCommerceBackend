@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Rest API [web] service to return manifest details for the WAR component.
+ * Rest API [web] service to return manifest details for the application.
  *
  * @author Neill McQuillin (created by)
  * @since 29 January 2020 (creation date)
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ManifestRestController {
-	private final ManifestReader manifestReader;
+	private final ManifestProvider manifestReader;
 
 	/**
 	 * Obtain the version number of the component, from the manifest, and return it as a string in the body.
@@ -66,10 +66,10 @@ public class ManifestRestController {
 
 	/**
 	 * Helper method to set the correlation id, if there is an X-header containing it.
-	 * 
+	 *
 	 * @param httpHeaders HTTP headers passed in a request.
 	 */
-	private void processXheaders(HttpHeaders httpHeaders) {
+	private void processXheaders(final HttpHeaders httpHeaders) {
 		if (httpHeaders != null) {
 			final String corrId = httpHeaders.getFirst("X-Correlation-Id");
 			MDC.put("correlationId", corrId);
