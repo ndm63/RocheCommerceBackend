@@ -6,5 +6,13 @@ This is a Roche home coding assignment.  It is a RESTful application using Java 
 
 1) Created from Spring initializr
 
+
+## Building and maintaining the application
+
+###Lombok###
+Lombok needs to be installed on the IDE: The [page](https://projectlombok.org/) 
+Lombok site explains the steps to perform.
+
+
 ## Running the application
 
