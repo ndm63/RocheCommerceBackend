@@ -75,9 +75,20 @@ public class ProductControllerTestE2E {
 		postBody.put("price", BigDecimal.valueOf(1.23));
 
 		// Check that the creation post returned correctly
-		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then()
-				.statusCode(201);
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
+				.body("sku", Matchers.equalTo(sku));
 		// Check that we find the created item in the list of all products
 		RestAssured.when().get().then().statusCode(200).body("sku", Matchers.hasItem(sku));
+	}
+
+	@Test
+	public void testNewProduct_noSku_400badRequest() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then()
+				.statusCode(400);
 	}
 }

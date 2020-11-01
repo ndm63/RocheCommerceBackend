@@ -42,6 +42,7 @@ public class Product implements Serializable {
 
 	@Version
 	@Column(nullable = false)
+	@Getter
 	private Long revisionNumber;
 
 	@Getter

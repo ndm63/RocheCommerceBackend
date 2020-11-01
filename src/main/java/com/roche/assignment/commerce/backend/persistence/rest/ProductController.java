@@ -31,24 +31,19 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 	private final ProductDAO dao;
 
-	@PostMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Product> newProduct(@RequestBody final Product newProduct) {
 //	    Product prd      = ProductMapper.DtoToEntity(newProduct);
 //      Product addedprd = productService.save(prd);
 		final Product saved = dao.save(newProduct);
 		final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{sku}")
 				.buildAndExpand(saved.getSku()).toUri();
-		return ResponseEntity.created(location).build();
+		return ResponseEntity.created(location).body(saved);
 	}
 
 	@GetMapping("/products")
 	@ResponseBody
 	public ResponseEntity<List<Product>> all() {
-//		final Product newProduct = new Product();
-//		newProduct.setSku(UUID.randomUUID().toString());
-//		newProduct.setName("tyres");
-//		newProduct.setPrice(BigDecimal.valueOf(2.34));
-//		dao.save(newProduct);
 		return ResponseEntity.ok().body(dao.findAll());
 	}
 }
