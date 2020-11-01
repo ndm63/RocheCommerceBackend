@@ -3,10 +3,16 @@
  */
 package com.roche.assignment.commerce.backend.service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.PropertyValueException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.roche.assignment.commerce.backend.dto.ProductDTO;
 import com.roche.assignment.commerce.backend.persistence.dao.ProductDAO;
@@ -25,10 +31,23 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductDAO dao;
 
 	@Override
-	public ProductDTO newProduct(final ProductDTO newProduct) {
-		final Product entity = mapToEntity(newProduct);
-		final Product saved = dao.save(entity);
-		return mapToDto(saved);
+	public ProductDTO newProduct(final ProductDTO newProduct) throws ServiceLayerException {
+		try {
+			final Product entity = mapToEntity(newProduct);
+			final Product saved = dao.save(entity);
+			return mapToDto(saved);
+		} catch (DataIntegrityViolationException exc ) {
+			// Translate persistence layer exceptions to service layer exceptions
+			if (exc.getCause() instanceof SQLIntegrityConstraintViolationException
+					|| exc.getCause() instanceof  ConstraintViolationException) {
+				throw new ConflictingIncomingDataException("The new product violated constraints with existing data");
+			} else if (exc.getCause() instanceof PropertyValueException) {
+				throw new InvalidIncomingDataException("The new product definition is invalid");
+			} else {
+				throw new ResponseStatusException(
+				          HttpStatus.INTERNAL_SERVER_ERROR, "Server failed to add new product for unknown reason");				
+			}
+		}
 	}
 
 	@Override

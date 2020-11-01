@@ -91,4 +91,19 @@ public class ProductControllerTestE2E {
 		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then()
 				.statusCode(400);
 	}
+
+	@Test
+	public void testNewProduct_addProductTwice_409conflict() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
+				.body("sku", Matchers.equalTo(sku));
+		// Send the same again
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(409);
+	}
 }

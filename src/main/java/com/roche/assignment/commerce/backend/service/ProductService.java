@@ -21,8 +21,9 @@ public interface ProductService {
 	 * 
 	 * @param newProduct The product to be added
 	 * @return The same product after being added.
+	 * @throws ServiceLayerException 
 	 */
-	ProductDTO newProduct(ProductDTO newProduct);
+	ProductDTO newProduct(ProductDTO newProduct) throws ServiceLayerException;
 
 	/**
 	 * Obtain all products (that haven't been deleted)

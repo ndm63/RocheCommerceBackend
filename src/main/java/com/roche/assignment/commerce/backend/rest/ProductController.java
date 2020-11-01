@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.roche.assignment.commerce.backend.dto.ProductDTO;
+import com.roche.assignment.commerce.backend.service.ConflictingIncomingDataException;
 import com.roche.assignment.commerce.backend.service.ProductService;
+import com.roche.assignment.commerce.backend.service.ServiceLayerException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +34,8 @@ public class ProductController {
 	private final ProductService service;
 
 	@PostMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ProductDTO> newProduct(@RequestBody final ProductDTO newProduct) {
+	public ResponseEntity<ProductDTO> newProduct(@RequestBody final ProductDTO newProduct)
+			throws ServiceLayerException {
 		final ProductDTO saved = service.newProduct(newProduct);
 		final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{sku}")
 				.buildAndExpand(saved.getSku()).toUri();
