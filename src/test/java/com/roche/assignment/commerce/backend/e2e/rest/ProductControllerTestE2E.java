@@ -3,28 +3,23 @@
  */
 package com.roche.assignment.commerce.backend.e2e.rest;
 
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.UUID;
 
-import org.assertj.core.api.Assertions;
+import org.hamcrest.Matchers;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import com.google.common.collect.Lists;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -53,9 +48,6 @@ public class ProductControllerTestE2E {
 		}
 	}
 
-	@Autowired
-	private RestTemplateBuilder restTemplateBuilder;
-
 	/** The default REST API url. */
 	@Value(value = "${app.ws.url.base}")
 	private String defaulTestUrlBase;
@@ -71,23 +63,21 @@ public class ProductControllerTestE2E {
 
 	@Test
 	public void testNewProduct_noBody_400badRequest() {
-		final RestTemplate restTemplate = restTemplateBuilder.build();
-		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(Lists.newArrayList(MediaType.APPLICATION_JSON));
-		final HttpEntity<Map<String, Object>> entity = new HttpEntity<>(null, headers);
-		final ResponseEntity<String> reply = restTemplate.postForEntity(restUrlBase, entity, String.class);
-
-		Assertions.assertThat(reply).isNotNull();
-		Assertions.assertThat(reply.getStatusCodeValue()).isEqualTo(200);
-		final String body = reply.getBody();
-		System.out.println(body);
-		Assertions.assertThat(body).isNotNull().matches("^(\\d+\\.\\d+\\.\\d+(\\.\\d+|-SNAPSHOT)|build-\\d+)$");
-	}
-
-	@Test
-	public void testNewProduct2_noBody_400badRequest() {
 		RestAssured.given().contentType(ContentType.JSON).when().post().then().statusCode(400);
 	}
 
+	@Test
+	public void testNewProduct_validJsonBodyNotExists_201created() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then()
+				.statusCode(201);
+		// Check that we find the created item in the list of all products
+		RestAssured.when().get().then().statusCode(200).body("sku", Matchers.hasItem(sku));
+	}
 }
