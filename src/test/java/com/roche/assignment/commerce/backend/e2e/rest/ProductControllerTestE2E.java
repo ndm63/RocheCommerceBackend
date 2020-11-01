@@ -88,8 +88,9 @@ public class ProductControllerTestE2E {
 		postBody.put("price", BigDecimal.valueOf(1.23));
 
 		// Check that the creation post returned correctly
-		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then()
-				.statusCode(400);
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(400)
+				.body("status", Matchers.equalTo("BAD_REQUEST"))
+				.body("message", Matchers.matchesRegex(".*definition is invalid.*"));
 	}
 
 	@Test
@@ -104,6 +105,7 @@ public class ProductControllerTestE2E {
 		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
 				.body("sku", Matchers.equalTo(sku));
 		// Send the same again
-		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(409);
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(409)
+				.body("status", Matchers.equalTo("CONFLICT")).body("message", Matchers.matchesRegex(".*constraint.*"));
 	}
 }
