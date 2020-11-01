@@ -33,11 +33,18 @@ public interface ProductService {
 
 	/**
 	 * Update an existing product
-	 * 
+	 *
 	 * @param sku     The sku of the product to be updated.
 	 *
 	 * @param product Product to update
 	 * @return The updated product
 	 */
 	ProductDTO update(String sku, ProductDTO product);
+
+	/**
+	 * Delete a product. This is a soft delete. so it just gets marked as deleted. Like an update.
+	 *
+	 * @param sku The sku of the product to be deleted.
+	 */
+	void delete(String sku);
 }

@@ -28,6 +28,7 @@ import lombok.Setter;
  */
 @Entity
 @NoArgsConstructor
+@NamedQuery(name = "Product.findAllNotDeleted", query = "SELECT p FROM Product p WHERE NOT p.deleted = true")
 @NamedQuery(name = "Product.findBySku", query = "SELECT p FROM Product p WHERE p.sku = :sku")
 public class Product implements Serializable {
 	private static final long serialVersionUID = 8096668686739777877L;
@@ -66,11 +67,9 @@ public class Product implements Serializable {
 	private Boolean deleted = Boolean.FALSE;
 
 	@Builder
-	public Product(String sku, String name, BigDecimal price) {
+	public Product(final String sku, final String name, final BigDecimal price) {
 		this.sku = sku;
 		this.name = name;
 		this.price = price;
 	}
-	
-	
 }

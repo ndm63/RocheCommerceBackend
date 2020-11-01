@@ -140,7 +140,76 @@ public class ProductControllerTestE2E {
 		// Change the price
 		postBody.put("price", BigDecimal.valueOf(3.99));
 		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().put("/{sku}", "garbage")
-				.then().statusCode(404)
-				.body("status", Matchers.equalTo("NOT_FOUND")).body("message", Matchers.matchesRegex("Product.*not found"));
+				.then().statusCode(404).body("status", Matchers.equalTo("NOT_FOUND"))
+				.body("message", Matchers.matchesRegex("Product.*not found"));
 	}
+
+	@Test
+	public void testDelete_existsNotAlreadyDeleted_200ok() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
+				.body("sku", Matchers.equalTo(sku));
+		// Check that the delete returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().delete("/{sku}", sku).then()
+				.statusCode(200).body("status", Matchers.equalTo("OK")).body("sku", Matchers.equalTo(sku));
+	}
+
+	@Test
+	public void testDelete_notExists_404notFound() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().delete("/{sku}", "garbage")
+				.then().statusCode(404).body("status", Matchers.equalTo("NOT_FOUND"))
+				.body("message", Matchers.matchesRegex("Product.*not found"));
+	}
+
+	@Test
+	public void testDelete_existsAlreadyDeleted_404notFound() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
+				.body("sku", Matchers.equalTo(sku));
+		// Check that the delete returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().delete("/{sku}", sku).then()
+				.statusCode(200).body("status", Matchers.equalTo("OK")).body("sku", Matchers.equalTo(sku));
+		// Check that the delete returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().delete("/{sku}", sku).then()
+				.statusCode(404).body("status", Matchers.equalTo("NOT_FOUND"))
+				.body("message", Matchers.matchesRegex("Product.*not found"));
+	}
+	
+	@Test
+	public void testNewProduct_previously_409conflict() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
+				.body("sku", Matchers.equalTo(sku));
+		// Check that the delete returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().delete("/{sku}", sku).then()
+				.statusCode(200).body("status", Matchers.equalTo("OK")).body("sku", Matchers.equalTo(sku));
+		// Send the same again
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(409)
+				.body("status", Matchers.equalTo("CONFLICT")).body("message", Matchers.matchesRegex(".*constraint.*"));
+	}
+
 }

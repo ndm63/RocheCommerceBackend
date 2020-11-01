@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<ProductDTO> all() {
-		final List<Product> entities = dao.findAll();
+		final List<Product> entities = dao.findAllNotDeleted();
 		return entities.stream().map(this::mapToDto).collect(Collectors.toList());
 	}
 
@@ -73,9 +73,21 @@ public class ProductServiceImpl implements ProductService {
 		return mapToDto(updated);
 	}
 
+	@Override
+	public void delete(final String sku) {
+		final Optional<Product> oldEntityOpt = dao.findBySku(sku);
+		if ((!oldEntityOpt.isPresent()) || Boolean.TRUE.equals(oldEntityOpt.get().getDeleted())) {
+			// not found because it never existed or has already been deleted.
+			throw new ProductNotFoundException(sku);
+		}
+		// found and not deleted
+		oldEntityOpt.get().setDeleted(true);
+		dao.save(oldEntityOpt.get());
+	}
+
 	/**
 	 * Map from a DTO to an entity. Currently just using Lombok builder. This will eventually be moved to a mapper from
-	 * a mapping framework.
+	 * a mapping framework e.g. MapStruct.
 	 *
 	 * @param dto The DTO to be mapped
 	 * @return The resulting entity
@@ -86,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
 
 	/**
 	 * Map from an entity to a DTO. Currently just using Lombok builder. This will eventually be moved to a mapper from
-	 * a mapping framework
+	 * a mapping framework e.g. MapStruct.
 	 *
 	 * @param entity The entity to be mapped
 	 * @return The resulting DTO.
@@ -94,5 +106,4 @@ public class ProductServiceImpl implements ProductService {
 	private ProductDTO mapToDto(final Product entity) {
 		return ProductDTO.builder().sku(entity.getSku()).name(entity.getName()).price(entity.getPrice()).build();
 	}
-
 }

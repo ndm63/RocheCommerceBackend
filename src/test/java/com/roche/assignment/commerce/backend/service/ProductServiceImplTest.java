@@ -42,7 +42,7 @@ public class ProductServiceImplTest {
 	}
 
 	@Test
-	void testNewProduct_validNotUnique_exception() throws ServiceLayerException {
+	void testNewProduct_validNotUnique_exception() {
 		final ProductDAO dao = Mockito.mock(ProductDAO.class);
 		final DataIntegrityViolationException exc = Mockito.mock(DataIntegrityViolationException.class);
 		final Exception cause = Mockito.mock(PropertyValueException.class);
@@ -59,7 +59,7 @@ public class ProductServiceImplTest {
 	}
 
 	@Test
-	void testNewProduct_notValid_exception() throws ServiceLayerException {
+	void testNewProduct_notValid_exception() {
 		final ProductDAO dao = Mockito.mock(ProductDAO.class);
 		final DataIntegrityViolationException exc = Mockito.mock(DataIntegrityViolationException.class);
 		final Exception cause = Mockito.mock(ConstraintViolationException.class);
@@ -76,20 +76,18 @@ public class ProductServiceImplTest {
 	}
 
 	@Test
-	void testAll_someDeleted_listOfNotDeleted() throws ServiceLayerException {
+	void testAll_someDeleted_listOfNotDeleted() {
 		final ProductDAO dao = Mockito.mock(ProductDAO.class);
-		Product product1 = Product.builder().sku("sku1").name("name1").price(BigDecimal.valueOf(1.00)).build();
-		product1.setDeleted(true);
 		Product product2 = Product.builder().sku("sku2").name("name2").price(BigDecimal.valueOf(2.00)).build();
-		List<Product> products = Lists.newArrayList(product1, product2);
-		Mockito.when(dao.findAll()).thenReturn(products);
+		List<Product> products = Lists.newArrayList(product2);
+		Mockito.when(dao.findAllNotDeleted()).thenReturn(products);
 
 		final ProductService objectUnderTest = new ProductServiceImpl(dao);
 
 		final List<ProductDTO> output = objectUnderTest.all();
 
 		Assertions.assertNotNull(output);
-		Assertions.assertEquals(2, output.size());
+		Assertions.assertEquals(1, output.size());
 	}
 
 }
