@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.roche.assignment.commerce.backend.persistence.dao.ProductDAO;
+import com.roche.assignment.commerce.backend.service.ProductService;
 
 /**
  * @author Neill McQuillin (created by)
@@ -47,7 +48,7 @@ public class ProductControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private ProductDAO dao;
+	private ProductService service;
 
 	@Test
 	public void testNewProduct_noBody_400badRequest() throws Exception {

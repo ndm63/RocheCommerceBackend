@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.roche.assignment.commerce.backend.dto.ProductDTO;
-import com.roche.assignment.commerce.backend.persistence.dao.ProductDAO;
-import com.roche.assignment.commerce.backend.persistence.model.Product;
+import com.roche.assignment.commerce.backend.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,25 +29,20 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class ProductController {
-	private final ProductDAO dao;
+	private final ProductService service;
 
 	@PostMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ProductDTO> newProduct(@RequestBody final ProductDTO newProduct) {
-//	    ProductDTO prd      = ProductMapper.DtoToEntity(newProduct);
-//      ProductDTO addedprd = productService.save(prd);
-		final Product entity = Product.builder().sku(newProduct.getSku()).name(newProduct.getName())
-				.price(newProduct.getPrice()).build();
-		final Product saved = dao.save(entity);
+		final ProductDTO saved = service.newProduct(newProduct);
 		final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{sku}")
 				.buildAndExpand(saved.getSku()).toUri();
-		final ProductDTO savedDto = ProductDTO.builder().sku(saved.getSku()).name(saved.getName())
-				.price(saved.getPrice()).build();
-		return ResponseEntity.created(location).body(savedDto);
+		return ResponseEntity.created(location).body(saved);
 	}
 
 	@GetMapping("/products")
 	@ResponseBody
-	public ResponseEntity<List<Product>> all() {
-		return ResponseEntity.ok().body(dao.findAll());
+	public ResponseEntity<List<ProductDTO>> all() {
+		final List<ProductDTO> items = service.all();
+		return ResponseEntity.ok().body(items);
 	}
 }

@@ -6,8 +6,6 @@ package com.roche.assignment.commerce.backend.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

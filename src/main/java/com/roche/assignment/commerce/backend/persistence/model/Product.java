@@ -16,6 +16,7 @@ import javax.persistence.Version;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -25,6 +26,7 @@ import lombok.Setter;
  * @since 22 July 2019 (creation date)
  */
 @Entity
+@NoArgsConstructor
 public class Product implements Serializable {
 	private static final long serialVersionUID = 8096668686739777877L;
 
