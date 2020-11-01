@@ -25,7 +25,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 /**
- * End to end test for the Product REST API controller.
+ * End to end test for the ProductDTO REST API controller.
  *
  * This is black-box testing. I.e. we assume that we don't have access to the underlying database. Normally we'd write
  * such tests with access to the database. In this case we'll need to contrive the tests to check the expected behaviour

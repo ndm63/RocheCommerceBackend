@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.roche.assignment.commerce.backend.dto.ProductDTO;
 import com.roche.assignment.commerce.backend.persistence.dao.ProductDAO;
 import com.roche.assignment.commerce.backend.persistence.model.Product;
 
@@ -32,13 +33,17 @@ public class ProductController {
 	private final ProductDAO dao;
 
 	@PostMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Product> newProduct(@RequestBody final Product newProduct) {
-//	    Product prd      = ProductMapper.DtoToEntity(newProduct);
-//      Product addedprd = productService.save(prd);
-		final Product saved = dao.save(newProduct);
+	public ResponseEntity<ProductDTO> newProduct(@RequestBody final ProductDTO newProduct) {
+//	    ProductDTO prd      = ProductMapper.DtoToEntity(newProduct);
+//      ProductDTO addedprd = productService.save(prd);
+		final Product entity = Product.builder().sku(newProduct.getSku()).name(newProduct.getName())
+				.price(newProduct.getPrice()).build();
+		final Product saved = dao.save(entity);
 		final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{sku}")
 				.buildAndExpand(saved.getSku()).toUri();
-		return ResponseEntity.created(location).body(saved);
+		final ProductDTO savedDto = ProductDTO.builder().sku(saved.getSku()).name(saved.getName())
+				.price(saved.getPrice()).build();
+		return ResponseEntity.created(location).body(savedDto);
 	}
 
 	@GetMapping("/products")

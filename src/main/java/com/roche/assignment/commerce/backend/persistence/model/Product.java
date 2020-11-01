@@ -14,11 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Product entity.
+ * ProductDTO entity.
  *
  * @author Neill McQuillin (created by)
  * @since 22 July 2019 (creation date)
@@ -33,7 +34,6 @@ public class Product implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false, precision = 10)
-	@Getter
 	private Long id;
 
 	@Getter
@@ -42,7 +42,6 @@ public class Product implements Serializable {
 
 	@Version
 	@Column(nullable = false)
-	@Getter
 	private Long revisionNumber;
 
 	@Getter
@@ -61,4 +60,13 @@ public class Product implements Serializable {
 	@Getter
 	@Setter
 	private Boolean deleted = Boolean.FALSE;
+
+	@Builder
+	public Product(String sku, String name, BigDecimal price) {
+		this.sku = sku;
+		this.name = name;
+		this.price = price;
+	}
+	
+	
 }

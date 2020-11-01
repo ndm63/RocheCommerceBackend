@@ -9,6 +9,7 @@ This is a Roche home coding assignment.  It is a RESTful application using Java 
 3) Add jib for container image builds  
 4) Added manifest endpoint  
 
+WebFlux could have been used instead of non reactive WebMVC.  However, it wasn't to avoid any issue in limited time.
 
 ## Building and maintaining the application ##
 

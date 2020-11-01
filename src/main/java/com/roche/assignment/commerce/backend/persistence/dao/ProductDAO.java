@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.roche.assignment.commerce.backend.persistence.model.Product;
 
 /**
- * DAO for the Product entity.
+ * DAO for the ProductDTO entity.
  *
  * @author Neill McQuillin (created by)
  * @since 22 July 2019 (creation date)
