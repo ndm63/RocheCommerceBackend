@@ -6,10 +6,9 @@ This is a Roche home coding assignment.  It is a RESTful application using Java 
 
 1) Created from Spring initializr  
 2) Added Lombok  
-3) Add jib for container image builds  
+3) Added jib for container image builds  
 4) Added manifest endpoint  
-
-WebFlux could have been used instead of non reactive WebMVC.  However, it wasn't to avoid any issue in limited time.
+5) Added Swagger2
 
 ## Building and maintaining the application ##
 
@@ -40,11 +39,11 @@ mvn clean package jib:build -Djib.to.image=nexus.inforisk.es:18545/inforisk/roch
 Run end-to-end tests, giving the running application base URL
 
 ```sh
-mvn clean test -Dtest=*E2E -Dapp.ws.url.base=http://192.168.181.50:9098
+mvn clean test -Dtest=*E2E -Dapp.ws.url.base=http://192.168.181.50:9097
 ```
 
 
-## Running the application
+## Running the application ##
 
 ### On local Docker ###
 
@@ -56,4 +55,22 @@ docker login nexus.inforisk.es:18549
 docker run -dt --name roche-commerce-backend --rm -e "JAVA_TOOL_OPTIONS=-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=0.0.0.0:8453,server=y,suspend=n" -p 8454:8453 -p 9097:8080 nexus.inforisk.es:18549/inforisk/roche-commerce-backend:0.0.1-SNAPSHOT
 ```
 
+## Swagger ##
 
+The Swagger documentation UI is available at the path with prefix '/swagger-ui/'.  For example, for the above Docker deployment:
+
+```sh
+http://192.168.181.50:9097/swagger-ui/
+```
+
+## Notes##
+
+WebFlux could have been used instead of non reactive WebMVC.  However, it wasn't to avoid any complications given the limited time.
+
+No security mechanism is implemented
+
+The id is not really relevant to the clients.  The SKU could have been used as the primary key (id).  Currently products are referred to only by SKU and id is never seen by the clients.
+
+Currently SKU can be updated.  This probably doesn't want to be the case.
+
+No concurrency mechanism has yet been implemented.  Specifically the @Version / Etag functionality could be added.
