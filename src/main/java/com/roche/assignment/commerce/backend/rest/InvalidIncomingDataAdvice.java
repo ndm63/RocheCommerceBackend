@@ -28,10 +28,10 @@ import com.roche.assignment.commerce.backend.service.InvalidIncomingDataExceptio
 public class InvalidIncomingDataAdvice {
 	/**
 	 * This method handles a {@link InvalidIncomingDataException} and returns an HTTP 400 code to the client along with
-	 * an exception message
+	 * an exception message 
 	 *
-	 * @param ex
-	 * @return
+	 * @param ex The exception to be handled
+	 * @return The body with the error message details
 	 */
 	@ResponseBody
 	@ExceptionHandler(InvalidIncomingDataException.class)

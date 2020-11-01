@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Version;
 
 import lombok.Builder;
@@ -27,6 +28,7 @@ import lombok.Setter;
  */
 @Entity
 @NoArgsConstructor
+@NamedQuery(name = "Product.findBySku", query = "SELECT p FROM Product p WHERE p.sku = :sku")
 public class Product implements Serializable {
 	private static final long serialVersionUID = 8096668686739777877L;
 

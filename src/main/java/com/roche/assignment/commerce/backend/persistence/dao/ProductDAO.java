@@ -3,6 +3,8 @@
  */
 package com.roche.assignment.commerce.backend.persistence.dao;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -15,5 +17,5 @@ import com.roche.assignment.commerce.backend.persistence.model.Product;
  * @since 22 July 2019 (creation date)
  */
 public interface ProductDAO extends JpaRepository<Product, Long> {
-	//enable
+	public Optional<Product> findBySku(@Param("sku") final String sku);
 }

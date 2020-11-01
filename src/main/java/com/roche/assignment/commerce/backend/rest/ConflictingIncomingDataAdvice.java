@@ -30,8 +30,8 @@ public class ConflictingIncomingDataAdvice {
 	 * This method handles a {@link ConflictingIncomingDataException} and returns an HTTP 409 code to the client along
 	 * with an exception message
 	 *
-	 * @param ex
-	 * @return
+	 * @param ex The exception to be handled
+	 * @return The body with the error message details
 	 */
 	@ResponseBody
 	@ExceptionHandler(ConflictingIncomingDataException.class)
