@@ -3,11 +3,10 @@
  */
 package com.roche.assignment.commerce.backend.persistence.rest;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 	private final ProductDAO dao;
 
-	@PostMapping("/products")
+	@PostMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Product> newProduct(@RequestBody final Product newProduct) {
 //	    Product prd      = ProductMapper.DtoToEntity(newProduct);
 //      Product addedprd = productService.save(prd);
