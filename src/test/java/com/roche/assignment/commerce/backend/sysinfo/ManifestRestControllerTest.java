@@ -52,9 +52,6 @@ public class ManifestRestControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private ServletContext servletContext;
-
-	@MockBean
 	private ManifestProvider manifestReader;
 
 	@Test

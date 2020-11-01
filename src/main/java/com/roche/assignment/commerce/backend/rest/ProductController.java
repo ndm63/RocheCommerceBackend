@@ -1,7 +1,7 @@
 /**
  * Roche Home Assignment
  */
-package com.roche.assignment.commerce.backend.persistence.rest;
+package com.roche.assignment.commerce.backend.rest;
 
 import java.net.URI;
 import java.util.List;
