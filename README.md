@@ -47,13 +47,22 @@ mvn clean test -Dtest=*E2E -Dapp.ws.url.base=http://192.168.181.50:9097
 
 ### On local Docker ###
 
-With remote debugging:
+With remote debugging and internal H2 database:
 
 ```sh
 docker login nexus.inforisk.es:18549
 
 docker run -dt --name roche-commerce-backend --rm -e "JAVA_TOOL_OPTIONS=-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=0.0.0.0:8453,server=y,suspend=n" -p 8454:8453 -p 9097:8080 nexus.inforisk.es:18549/inforisk/roche-commerce-backend:0.0.1-SNAPSHOT
 ```
+
+To test with a Dockerised MySql database:
+ 
+```sh
+docker run -dt --name mysql -e MYSQL_ROOT_PASSWORD=secret -e "MYSQL_DATABASE=commerce" -e "MYSQL_USER=admin" -e "MYSQL_PASSWORD=frodo12" -p 3306:3306 nexus.inforisk.es:18549/mysql:latest
+
+docker run -dt --name roche-commerce-backend -e "SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver" -e "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect" -e "SPRING_DATASOURCE_USERNAME=admin" -e "SPRING_DATASOURCE_PASSWORD=frodo12" -e "SPRING_DATASOURCE_JDBC_URL=jdbc:mysql://192.168.181.50:3306/commerce" -e "SPRING_JPA_GENERATE_DDL=true" -e "SPRING_JPA_HIBERNATE_DDL_AUTO=create" -e "JAVA_TOOL_OPTIONS=-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=0.0.0.0:8453,server=y,suspend=n" -p 8454:8453 -p 9097:8080 nexus.inforisk.es:18549/inforisk/roche-commerce-backend:0.0.1-SNAPSHOT
+```
+
 
 ## Swagger ##
 
@@ -74,3 +83,5 @@ The id is not really relevant to the clients.  The SKU could have been used as t
 Currently SKU can be updated.  This probably doesn't want to be the case.
 
 No concurrency mechanism has yet been implemented.  Specifically the @Version / Etag functionality could be added.
+
+Pagination needs to be added.
