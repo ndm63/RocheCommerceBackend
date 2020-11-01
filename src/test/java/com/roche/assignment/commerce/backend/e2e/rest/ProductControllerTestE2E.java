@@ -108,4 +108,39 @@ public class ProductControllerTestE2E {
 		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(409)
 				.body("status", Matchers.equalTo("CONFLICT")).body("message", Matchers.matchesRegex(".*constraint.*"));
 	}
+
+	@Test
+	public void testUpdate_exists_200ok() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
+				.body("sku", Matchers.equalTo(sku));
+		// Change the price
+		postBody.put("price", BigDecimal.valueOf(3.99));
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().put("/{sku}", sku).then()
+				.statusCode(200).body("price", Matchers.equalTo(3.99f));
+	}
+
+	@Test
+	public void testUpdate_notExists_404notFound() throws JSONException {
+		final JSONObject postBody = new JSONObject();
+		final String sku = UUID.randomUUID().toString();
+		postBody.put("sku", sku);
+		postBody.put("name", "Widget 1");
+		postBody.put("price", BigDecimal.valueOf(1.23));
+
+		// Check that the creation post returned correctly
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().post().then().statusCode(201)
+				.body("sku", Matchers.equalTo(sku));
+		// Change the price
+		postBody.put("price", BigDecimal.valueOf(3.99));
+		RestAssured.given().contentType(ContentType.JSON).body(postBody.toString()).when().put("/{sku}", "garbage")
+				.then().statusCode(404)
+				.body("status", Matchers.equalTo("NOT_FOUND")).body("message", Matchers.matchesRegex("Product.*not found"));
+	}
 }
