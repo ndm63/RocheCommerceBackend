@@ -3,6 +3,7 @@
  */
 package com.roche.assignment.commerce.backend.e2e.rest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -11,15 +12,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.containers.output.ToStringConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -34,31 +33,28 @@ import io.restassured.http.ContentType;
  * @author Neill McQuillin (created by)
  * @since 01 November 2020 (creation date)
  */
-@WebMvcTest
-@AutoConfigureWebClient
-@ContextConfiguration(classes = { ProductControllerTestE2E.SpringConfig.class })
-@TestPropertySource(locations = "classpath:e2e.properties")
+@Testcontainers
 public class ProductControllerTestE2E {
-	@Configuration
-	@EnableWebMvc
-	public static class SpringConfig {
-		@Bean(value = "restTemplate")
-		public RestTemplate restTemplate() {
-			return new RestTemplate();
-		}
-	}
-
-	/** The default REST API url. */
-	@Value(value = "${app.ws.url.base}")
-	private String defaulTestUrlBase;
-
-	/** The REST API url. */
-	private String restUrlBase;
+	@Container
+	static final GenericContainer<?> APP = new GenericContainer<>(
+			DockerImageName.parse(System.getProperty("dockerImagePullPath"))).withExposedPorts(8080)
+					.withLogConsumer(new ToStringConsumer() {
+						@Override
+						public void accept(final OutputFrame outputFrame) {
+							if (outputFrame.getBytes() != null) {
+								try {
+									System.out.write(outputFrame.getBytes());
+								} catch (final IOException e) {
+									throw new RuntimeException(e);
+								}
+							}
+						}
+					}).waitingFor(Wait.forHttp("/api/version"));
 
 	@BeforeEach
 	void beforeEach() {
-		restUrlBase = System.getProperty("app.ws.url.base", defaulTestUrlBase) + "/api/v1/products";
-		RestAssured.baseURI = restUrlBase;
+		RestAssured.baseURI = String.format("http://%s:%d/api/v1/products", APP.getContainerIpAddress(),
+				APP.getFirstMappedPort());
 	}
 
 	@Test
@@ -192,7 +188,7 @@ public class ProductControllerTestE2E {
 				.statusCode(404).body("status", Matchers.equalTo("NOT_FOUND"))
 				.body("message", Matchers.matchesRegex("Product.*not found"));
 	}
-	
+
 	@Test
 	public void testNewProduct_previously_409conflict() throws JSONException {
 		final JSONObject postBody = new JSONObject();

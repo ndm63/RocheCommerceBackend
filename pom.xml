@@ -17,7 +17,9 @@
     <properties>
         <java.version>1.8</java.version>
         <!-- Version for container Image -->
-        <spring-boot.build-image.imageName>inforisk/${project.artifactId}:${build.version}</spring-boot.build-image.imageName>
+        <spring-boot.build-image.imageName>inforisk/roche-${project.artifactId}:${build.version}</spring-boot.build-image.imageName>
+        <docker-pull-repo>nexus.inforisk.es:18549</docker-pull-repo>
+        <docker-full-image-pull-path>${docker-pull-repo}/${spring-boot.build-image.imageName}</docker-full-image-pull-path>
         <jib.version>2.6.0</jib.version>
         <!-- Version for Manifest file -->
         <build.version>${project.version}</build.version>
@@ -81,7 +83,14 @@
             <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.15.0-rc2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
@@ -129,6 +138,12 @@
                     <excludes>
                         <exclude>%regex[.*TestE2E]</exclude>
                     </excludes>
+                    <systemProperties>
+                        <property>
+                            <name>dockerImagePullPath</name>
+                            <value>${docker-full-image-pull-path}</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
