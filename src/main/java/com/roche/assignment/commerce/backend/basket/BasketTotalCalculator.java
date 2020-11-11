@@ -6,8 +6,8 @@ package com.roche.assignment.commerce.backend.basket;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class BasketPriceCalculator {
-	public float calculatePrice(Map<Integer, Item> quantityToItemMap) {
+public class BasketTotalCalculator {
+	public float calculatePrice(Map<Integer, Product> quantityToItemMap) {
 		return quantityToItemMap.entrySet().stream().map(e -> e.getKey() * e.getValue().getPrice()).reduce(0f,
 				(a, b) -> a + b);
 	}
@@ -16,7 +16,7 @@ public class BasketPriceCalculator {
 		return Pattern.matches("^\\*.*\\*$", promocode);
 	}
 
-	public String getItemDetails(Item item) {
+	public String getItemDetails(Product item) {
 		return "This is " + item.getName() + ", with description: " + item.getDescription() + " with ingredients: "
 				+ item.getIngredients();
 	}
