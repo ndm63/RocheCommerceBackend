@@ -20,7 +20,7 @@ public class ProductTest {
 		final Product objectUnderTest = new Product(0.54f, "apple", "delicious green apple",
 				Lists.newArrayList("skin", "pips", "flesh"));
 
-		final String output = objectUnderTest.getItemDetails(objectUnderTest);
+		final String output = objectUnderTest.getProductDetails(objectUnderTest);
 
 		Assertions.assertThat(output).isEqualTo(
 				"This is apple, with description: delicious green apple with ingredients: [skin, pips, flesh]");

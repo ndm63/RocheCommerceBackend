@@ -15,10 +15,9 @@ public class Product {
 	private final String name;
 	private final String description;
 	private final List<String> ingredients;
-	
 
-	public String getItemDetails(final Product item) {
-		return "This is " + item.getName() + ", with description: " + item.getDescription() + " with ingredients: "
-				+ item.getIngredients();
+	public String getProductDetails(final Product item) {
+		return String.format("This is %s, with description: %s with ingredients: %s", item.getName(),
+				item.getDescription(), item.getIngredients());
 	}
 }
