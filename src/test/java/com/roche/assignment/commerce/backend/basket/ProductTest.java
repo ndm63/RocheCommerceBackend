@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 public class ProductTest {
 	@Test
 	void testGetItemDetails_valid_textCorrect() {
-		final Product objectUnderTest = new Product(0.54f, "apple", "delicious green apple",
+		final Product objectUnderTest = new Product("apple", "delicious green apple",
 				Lists.newArrayList("skin", "pips", "flesh"));
 
 		final String output = objectUnderTest.getProductDetails(objectUnderTest);

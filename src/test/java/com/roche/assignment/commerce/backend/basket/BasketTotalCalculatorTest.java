@@ -23,11 +23,8 @@ public class BasketTotalCalculatorTest {
 		final Product apple = Mockito.mock(Product.class);
 		final Product orange = Mockito.mock(Product.class);
 
-		Mockito.when(apple.getPrice()).thenReturn(0.34f);
-		Mockito.when(orange.getPrice()).thenReturn(0.12f);
-
-		final OrderItem apples = new OrderItem(apple, 5);
-		final OrderItem oranges = new OrderItem(orange, 5);
+		final OrderItem apples = new OrderItem(apple, 5, 0.34f);
+		final OrderItem oranges = new OrderItem(orange, 5, 0.12f);
 		final Collection<OrderItem> input = Lists.newArrayList(apples, oranges);
 
 		final BasketTotalCalculator objectUnderTest = new BasketTotalCalculator();

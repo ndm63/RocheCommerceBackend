@@ -15,4 +15,5 @@ import lombok.RequiredArgsConstructor;
 public class OrderItem {
 	private final Product product;
 	private final Integer quantity;
+	private final Float price;
 }
