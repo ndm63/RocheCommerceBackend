@@ -3,6 +3,8 @@
  */
 package com.roche.assignment.commerce.backend.basket;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,5 +17,5 @@ import lombok.RequiredArgsConstructor;
 public class OrderItem {
 	private final Product product;
 	private final Integer quantity;
-	private final Float price;
+	private final BigDecimal price;
 }

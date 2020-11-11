@@ -3,6 +3,7 @@
  */
 package com.roche.assignment.commerce.backend.basket;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
@@ -23,14 +24,14 @@ public class BasketTotalCalculatorTest {
 		final Product apple = Mockito.mock(Product.class);
 		final Product orange = Mockito.mock(Product.class);
 
-		final OrderItem apples = new OrderItem(apple, 5, 0.34f);
-		final OrderItem oranges = new OrderItem(orange, 5, 0.12f);
+		final OrderItem apples = new OrderItem(apple, 5, BigDecimal.valueOf(0.34));
+		final OrderItem oranges = new OrderItem(orange, 5, BigDecimal.valueOf(0.12));
 		final Collection<OrderItem> input = Lists.newArrayList(apples, oranges);
 
 		final BasketTotalCalculator objectUnderTest = new BasketTotalCalculator();
 
-		final float output = objectUnderTest.calculatePrice(input);
+		final BigDecimal output = objectUnderTest.calculatePrice(input);
 
-		Assertions.assertThat(output).isEqualTo(2.3f);
+		Assertions.assertThat(output.compareTo(BigDecimal.valueOf(2.30))).isEqualTo(0);
 	}
 }

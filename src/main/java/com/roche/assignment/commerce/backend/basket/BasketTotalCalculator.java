@@ -3,10 +3,12 @@
  */
 package com.roche.assignment.commerce.backend.basket;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 public class BasketTotalCalculator {
-	public float calculatePrice(final Collection<OrderItem> basket) {
-		return basket.stream().map(i -> i.getQuantity() * i.getPrice()).reduce(0f, (a, b) -> a + b);
+	public BigDecimal calculatePrice(final Collection<OrderItem> basket) {
+		return basket.stream().map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+				.reduce(BigDecimal.valueOf(0f), BigDecimal::add);
 	}
 }
