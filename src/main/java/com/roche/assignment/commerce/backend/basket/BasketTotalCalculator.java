@@ -9,10 +9,4 @@ public class BasketTotalCalculator {
 	public float calculatePrice(final Collection<OrderItem> basket) {
 		return basket.stream().map(i -> i.getQuantity() * i.getProduct().getPrice()).reduce(0f, (a, b) -> a + b);
 	}
-
-	public String getItemDetails(final Product item) {
-		return "This is " + item.getName() + ", with description: " + item.getDescription() + " with ingredients: "
-				+ item.getIngredients();
-	}
-
 }
