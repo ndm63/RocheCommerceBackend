@@ -3,20 +3,19 @@
  */
 package com.roche.assignment.commerce.backend.basket;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.regex.Pattern;
 
 public class BasketTotalCalculator {
-	public float calculatePrice(Map<Integer, Product> quantityToItemMap) {
-		return quantityToItemMap.entrySet().stream().map(e -> e.getKey() * e.getValue().getPrice()).reduce(0f,
-				(a, b) -> a + b);
+	public float calculatePrice(final Collection<OrderItem> basket) {
+		return basket.stream().map(i -> i.getQuantity() * i.getProduct().getPrice()).reduce(0f, (a, b) -> a + b);
 	}
 
-	public boolean isValidPromoCode(String promocode) {
+	public boolean isValidPromoCode(final String promocode) {
 		return Pattern.matches("^\\*.*\\*$", promocode);
 	}
 
-	public String getItemDetails(Product item) {
+	public String getItemDetails(final Product item) {
 		return "This is " + item.getName() + ", with description: " + item.getDescription() + " with ingredients: "
 				+ item.getIngredients();
 	}
